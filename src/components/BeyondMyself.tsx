@@ -1,6 +1,23 @@
 import React, { useMemo } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { seeded } from './ScrapbookBackdrop';
+import { CardGallery, GalleryPhoto } from './CardGallery';
+
+// Extra photos per card (same order as CONTENT.cards), shown after the card's own image.
+const PHOTOS: GalleryPhoto[][] = [
+  [
+    { src: '/gallery/peace-village/peace-village-1.jpg', en: 'Charity visit to Peace Village, Thanh Xuan', vi: 'Chuyến thiện nguyện tại Làng Hòa Bình Thanh Xuân' },
+    { src: '/gallery/peace-village/peace-village-3.jpg', en: 'Spending time with the children at Peace Village', vi: 'Dành thời gian cùng các em ở Làng Hòa Bình' },
+    { src: '/gallery/peace-village/peace-village-4.jpg', en: 'Peace Village charity project', vi: 'Dự án thiện nguyện Làng Hòa Bình' },
+    { src: '/gallery/peace-village/peace-village-5.jpg', en: 'Peace Village charity project', vi: 'Dự án thiện nguyện Làng Hòa Bình' }
+  ],
+  [
+    { src: '/gallery/bach-mai/bach-mai-community-support-2.jpg', en: 'Community support at Bach Mai Hospital', vi: 'Hoạt động hỗ trợ cộng đồng tại Bệnh viện Bạch Mai' }
+  ],
+  [
+    { src: '/gallery/sos-hai-phong/sos-hai-phong-gifts.jpg', en: 'Visiting and giving gifts at SOS Children’s Village Hai Phong', vi: 'Chương trình thăm và tặng quà Làng trẻ em SOS Hải Phòng' }
+  ]
+];
 
 type Card = { image: string; position: string; alt: string; name: string; role: string; body: string };
 
@@ -134,13 +151,11 @@ export const BeyondMyself: React.FC = () => {
                       }`}
                       style={{ clipPath: clips[i] }}
                     >
-                      <div
-                        className={`mx-auto overflow-hidden bg-[#FFFDF8] p-[3.5%] shadow-[0_2px_5px_rgba(60,40,20,0.2)] ${
-                          featured ? 'w-[90%] aspect-[4/3]' : 'w-[78%] aspect-[4/3]'
-                        }`}
-                      >
-                        <img src={card.image} alt={card.alt} className="w-full h-full object-cover" style={{ objectPosition: card.position }} />
-                      </div>
+                      <CardGallery
+                        photos={[{ src: card.image, en: card.alt, vi: card.alt }, ...PHOTOS[i]]}
+                        position={card.position}
+                        frameClassName={`p-[3.5%] aspect-[4/3] ${featured ? 'w-[90%]' : 'w-[78%]'}`}
+                      />
                       <h3
                         className={`mt-[clamp(14px,1.4vw,20px)] m-0 font-serif italic font-semibold text-[#2E1A16] leading-[1.1] ${
                           featured ? 'text-[clamp(1.35rem,1.75vw,1.8rem)]' : 'text-[clamp(1.2rem,1.5vw,1.55rem)]'

@@ -1,6 +1,36 @@
 import React, { useMemo } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { seeded } from './ScrapbookBackdrop';
+import { CardGallery, GalleryPhoto } from './CardGallery';
+
+// Photos per card (same order as CONTENT.cards); the first one is shown on the card.
+const PHOTOS: GalleryPhoto[][] = [
+  [
+    { src: '/certificates/veo-2026.jpg', en: 'VEO 2026 certificate', vi: 'Giấy chứng nhận VEO 2026' }
+  ],
+  [
+    { src: '/gallery/wico/wico-photo-stage-1.jpg', en: 'Gold medalists on stage at WICO 2026, Seoul', vi: 'Nhận Huy chương Vàng trên sân khấu WICO 2026, Seoul' },
+    { src: '/gallery/wico/wico-photo-ceremony.jpg', en: 'WICO 2026 award ceremony', vi: 'Lễ trao giải WICO 2026' },
+    { src: '/gallery/wico/wico-photo-award-1.jpg', en: 'Receiving the WICO Gold Medal and certificate', vi: 'Nhận Huy chương Vàng và giấy chứng nhận WICO' },
+    { src: '/gallery/wico/wico-photo-award-2.jpg', en: 'With the WICO organising committee', vi: 'Cùng ban tổ chức WICO' },
+    { src: '/gallery/wico/wico-photo-team.jpg', en: 'Our team with medals and certificates', vi: 'Cả nhóm cùng huy chương và giấy chứng nhận' },
+    { src: '/gallery/wico/wico-gold-medal.jpg', en: 'WICO 2026 Gold Medal', vi: 'Huy chương Vàng WICO 2026' },
+    { src: '/certificates/wico-2026.jpg', en: 'WICO 2026 certificate', vi: 'Giấy chứng nhận WICO 2026' }
+  ],
+  [
+    { src: '/gallery/national-chem/national-chem-team-2.jpg', en: 'National Chemistry team', vi: 'Đội tuyển HSG Quốc gia môn Hóa học' },
+    { src: '/gallery/national-chem/national-chem-team-1.jpg', en: 'With the Chemistry team', vi: 'Cùng đội tuyển Hóa học' },
+    { src: '/gallery/national-chem/chemistry-class-portrait.jpg', en: 'Tran Ngoc Anh, Chemistry class 10 Hoa 1', vi: 'Trần Ngọc Anh, lớp 10 Hóa 1' },
+    { src: '/certificates/national-chemistry-2025-2026.jpg', en: 'National Chemistry Third Prize certificate', vi: 'Giấy chứng nhận Giải Ba HSG Quốc gia môn Hóa học' }
+  ],
+  [
+    { src: '/gallery/axgo/axgo-photo-6.jpg', en: 'At AXGO 2026', vi: 'Tại AXGO 2026' },
+    { src: '/gallery/axgo/axgo-photo-4.jpg', en: 'AXGO 2026', vi: 'AXGO 2026' },
+    { src: '/gallery/axgo/axgo-photo-5.jpg', en: 'AXGO 2026', vi: 'AXGO 2026' },
+    { src: '/gallery/axgo/axgo-gold-medal.jpg', en: 'AXGO Gold Medal', vi: 'Huy chương Vàng AXGO' },
+    { src: '/certificates/axgo-2026.jpg', en: 'AXGO 2026 certificate', vi: 'Giấy chứng nhận AXGO 2026' }
+  ]
+];
 
 type Card = { image: string; position: string; alt: string; name: string; result: string; body: string };
 
@@ -147,9 +177,11 @@ export const Milestones: React.FC = () => {
                     className={`flex-1 px-[9%] pt-[clamp(26px,2.4vw,36px)] pb-[clamp(26px,2.6vw,38px)] text-center ${i % 2 ? 'bg-[#EAD5AE]' : 'bg-[#C9A981]'}`}
                     style={{ clipPath: clips[i] }}
                   >
-                    <div className="mx-auto w-[74%] aspect-[4/3] overflow-hidden bg-[#FFFDF8] p-[4%] shadow-[0_2px_5px_rgba(60,40,20,0.2)]">
-                      <img src={card.image} alt={card.alt} className="w-full h-full object-cover" style={{ objectPosition: card.position }} />
-                    </div>
+                    <CardGallery
+                      photos={[{ src: card.image, en: card.alt, vi: card.alt }, ...PHOTOS[i].filter((p) => p.src !== card.image)]}
+                      position={card.position}
+                      frameClassName="w-[74%] aspect-[4/3] p-[4%]"
+                    />
                     <h3 className="mt-[clamp(14px,1.4vw,20px)] m-0 font-serif italic font-semibold text-[#2E1A16] leading-[1.1] text-[clamp(1.2rem,1.5vw,1.55rem)]">
                       {card.name}
                     </h3>

@@ -207,3 +207,11 @@
 @media (min-width: 1024px) {
   #portfolio-main-content section[id] { scroll-margin-top: 3rem; }
 }
+
+/* Photos that open in the lightbox on click (see components/Lightbox.tsx) */
+#portfolio-main-content img[alt]:not([alt=""]):not([data-no-zoom]) {
+  cursor: zoom-in;
+}
+#portfolio-main-content :is(button, a, [data-no-zoom]) img {
+  cursor: inherit;
+}
