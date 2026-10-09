@@ -1,13 +1,22 @@
 import React, { useMemo } from 'react';
-import { ImageIcon } from 'lucide-react';
+import { Expand, ImageIcon } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { seeded } from './ScrapbookBackdrop';
+import { useLightbox } from './Lightbox';
 
-// Photos for each part. '' shows an empty photo slot until a real photo is added.
-const PHOTOS = {
-  photography: '/gallery/photography/hanoi-skyline.jpg',
-  music: '/gallery/piano/zhongsin-performance.jpg',
-  life: '/gallery/photography/friends.jpg'
+// Photos for each part; the first is shown on the card, all open in the lightbox.
+// An empty list shows an empty photo slot until a real photo is added.
+const PHOTOS: Record<'photography' | 'music' | 'life', { src: string; en: string; vi: string }[]> = {
+  photography: [
+    { src: '/gallery/photography/hanoi-skyline.jpg', en: 'Hanoi skyline, a photo I took', vi: 'Toàn cảnh Hà Nội, một bức ảnh mình chụp' }
+  ],
+  music: [
+    { src: '/gallery/piano/zhongsin-performance.jpg', en: 'Playing piano at the Zhongsin International Music Competition', vi: 'Biểu diễn piano tại cuộc thi âm nhạc quốc tế Zhongsin' },
+    { src: '/gallery/piano/zhongsin-programme-cover.jpg', en: 'Programme of the 19th Zhongsin International Music Competition, Singapore 2025', vi: 'Cuốn chương trình Cuộc thi Âm nhạc Quốc tế Zhongsin lần thứ 19, Singapore 2025' }
+  ],
+  life: [
+    { src: '/gallery/photography/friends.jpg', en: 'A moment with friends', vi: 'Một khoảnh khắc cùng bạn bè' }
+  ]
 };
 
 const CONTENT = {
@@ -77,6 +86,7 @@ const LeafTape: React.FC<{ className: string }> = ({ className }) => (
 /** Outside the Ledger: photography, music and life beyond school, three photos on a burgundy band. */
 export const OutsideLedger: React.FC = () => {
   const { isVi } = useLanguage();
+  const { open } = useLightbox();
   const c = isVi ? CONTENT.vi : CONTENT.en;
   const bandClip = useMemo(() => rippedBottom(71, 90, 4), []);
   const fibreClip = useMemo(() => rippedBottom(71, 93, 4.4), []);
@@ -139,7 +149,8 @@ export const OutsideLedger: React.FC = () => {
               <div className="relative flex-1 bg-[#8E3A44] px-[clamp(16px,4%,72px)] pt-[clamp(26px,3vw,46px)] pb-[clamp(56px,7vw,110px)]" style={{ clipPath: bandClip }}>
                 <ul className="m-0 p-0 list-none grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-[5%]">
                   {c.parts.map((part, i) => {
-                    const src = PHOTOS[part.key];
+                    const photos = PHOTOS[part.key].map((p) => ({ src: p.src, alt: isVi ? p.vi : p.en, caption: isVi ? p.vi : p.en }));
+                    const src = photos[0]?.src;
                     return (
                       <li key={part.key} className="min-w-0 text-center">
                         <div
@@ -149,7 +160,18 @@ export const OutsideLedger: React.FC = () => {
                         >
                           <div className="aspect-[4/3] overflow-hidden bg-[#E6DCC9] flex items-center justify-center">
                             {src ? (
-                              <img src={src} alt={part.alt} className="w-full h-full object-cover object-[35%_60%]" />
+                              <button
+                                type="button"
+                                onClick={() => open(photos, 0)}
+                                aria-label={`${isVi ? 'Xem ảnh lớn' : 'View photo'}: ${part.alt}`}
+                                className="group relative block w-full h-full cursor-zoom-in"
+                              >
+                                <img src={src} alt={part.alt} className="w-full h-full object-cover object-[35%_60%] transition-transform duration-500 group-hover:scale-[1.04]" />
+                                <span className="absolute right-[5%] bottom-[5%] flex items-center gap-1 rounded-full bg-[#2E1A16]/70 text-[#F4F0E6] text-[10px] font-semibold tracking-[0.08em] px-2 py-1 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity">
+                                  <Expand className="w-3 h-3" />
+                                  {photos.length > 1 ? `${photos.length} ${isVi ? 'ảnh' : 'photos'}` : isVi ? 'Xem ảnh lớn' : 'View photo'}
+                                </span>
+                              </button>
                             ) : (
                               <span className="flex flex-col items-center gap-1.5 text-[#3D2A24]/50 text-[10px] uppercase tracking-[0.14em] px-2">
                                 <ImageIcon className="w-5 h-5" strokeWidth={1.4} />

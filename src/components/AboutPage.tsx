@@ -5,6 +5,14 @@ import { TRANSLATIONS } from '../data/translations';
 import { PERSONAL_INFO } from '../data/portfolioData';
 import { ScrapbookBackdrop } from './ScrapbookBackdrop';
 import { PortraitFrame } from './PortraitFrame';
+import { useLightbox } from './Lightbox';
+
+const PORTRAITS = [
+  '/profile/dsc-4647-opt.jpg',
+  '/profile/dsc-4678-opt.jpg',
+  '/profile/about-peach-opt.jpg',
+  '/profile/closing-portrait.jpg'
+];
 
 interface AboutPageProps {
   onNavigate?: (page: PageId) => void;
@@ -15,6 +23,12 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, showSubtitle =
   const { language, isVi } = useLanguage();
   const t = TRANSLATIONS[language];
   const hasCv = Boolean(PERSONAL_INFO.cvUrl.trim());
+  const { open } = useLightbox();
+  const name = isVi ? 'Trần Ngọc Anh' : 'Tran Ngoc Anh';
+  const openPortraits = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    open(PORTRAITS.map((src) => ({ src, alt: name, caption: name })), 0);
+  };
 
   return (
     <section
@@ -25,7 +39,14 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, showSubtitle =
       <div className="about-layout max-w-6xl xl:max-w-7xl 2xl:max-w-[1500px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-stretch relative z-10">
         {/* Left Side: Large, Prominent Portrait Image */}
         <div className="about-photo lg:col-span-5 xl:col-span-5 w-full flex justify-center lg:justify-start">
-          <div className="relative w-full max-w-lg lg:max-w-none aspect-[4/5] lg:aspect-auto lg:h-full lg:min-h-[520px]">
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={openPortraits}
+            onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && openPortraits(e)}
+            aria-label={`${isVi ? 'Xem ảnh lớn' : 'View photos'}: ${name}`}
+            className="relative w-full max-w-lg lg:max-w-none aspect-[4/5] lg:aspect-auto lg:h-full lg:min-h-[520px] cursor-zoom-in"
+          >
             <PortraitFrame
               src="/profile/dsc-4647-opt.jpg"
               alt={isVi ? 'Trần Ngọc Anh' : 'Tran Ngoc Anh'}
